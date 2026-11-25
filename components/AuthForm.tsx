@@ -46,6 +46,9 @@ export default function AuthForm({ mode, next = '/dashboard', token }: { mode: M
         </label>
       )}
       {mode === 'signup' && (
+        <label className="check"><input type="checkbox" name="newsletter" value="yes" /> <span>📬 Send me the bulls2bear newsletter: new courses, shorts and webinar invites. Unsubscribe anytime.</span></label>
+      )}
+      {mode === 'signup' && (
         <label className="check"><input type="checkbox" required /> <span>I agree to the <Link href="/terms" className="link">Terms</Link> and <Link href="/privacy" className="link">Privacy Policy</Link>, and understand this is educational content, not investment advice.</span></label>
       )}
       <button className="btn btn-primary btn-lg btn-block" disabled={busy}>
