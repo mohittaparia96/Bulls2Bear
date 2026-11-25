@@ -2,12 +2,12 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// PostgreSQL (Neon via Vercel Storage). DATABASE_URL = pooled URL used by the app,
-// DATABASE_URL_UNPOOLED = direct URL used for creating/updating tables.
+// PostgreSQL (Neon via Vercel Storage, connected with the "DB_" prefix). DB_DATABASE_URL = pooled URL used by the app,
+// DB_DATABASE_URL_UNPOOLED = direct URL used for creating/updating tables.
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  url       = env("DB_DATABASE_URL")
+  directUrl = env("DB_DATABASE_URL_UNPOOLED")
 }
 
 model User {
