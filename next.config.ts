@@ -11,6 +11,8 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   serverExternalPackages: ['razorpay'],
+  // Bundle the demo lesson videos with the stream API route so they exist on Vercel.
+  outputFileTracingIncludes: { '/api/video/stream/[chapterId]': ['./storage/videos/**/*'] },
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }];
   },

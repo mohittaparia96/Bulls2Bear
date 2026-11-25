@@ -3,5 +3,4 @@ node_modules
 .env
 *.db
 *.db-journal
-storage/videos/*.mp4
 next-env.d.ts
