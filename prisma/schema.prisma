@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Local dev: sqlite. Production: change provider to "postgresql" and point DATABASE_URL at it.
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  phone        String?
+  passwordHash String
+  role         String        @default("STUDENT") // STUDENT | ADMIN
+  createdAt    DateTime      @default(now())
+  sessions     Session[]
+  enrollments  Enrollment[]
+  orders       Order[]
+  progress     Progress[]
+  resetTokens  PasswordReset[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent  String?
+  ip         String?
+  createdAt  DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+  expiresAt  DateTime
+  @@index([userId])
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Course {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  title       String
+  subtitle    String
+  category    String
+  level       String
+  description String
+  outcomes    String       // JSON array of strings
+  pricePaise  Int
+  mrpPaise    Int
+  accent      String       @default("green") // green | red | gold
+  icon        String       @default("◈")
+  instructor  String       @default("bulls2bear Faculty")
+  sortOrder   Int          @default(0)
+  published   Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  chapters    Chapter[]
+  enrollments Enrollment[]
+  orders      Order[]
+}
+
+model Chapter {
+  id          String     @id @default(cuid())
+  courseId    String
+  course      Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  slug        String
+  title       String
+  summary     String
+  durationSec Int
+  sortOrder   Int
+  isFree      Boolean    @default(false)
+  // Provider-specific id: demo → file name in /storage/videos, vdocipher → videoId, bunny → video GUID
+  videoId     String
+  progress    Progress[]
+  @@unique([courseId, slug])
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  source    String   @default("PURCHASE") // PURCHASE | ADMIN_GRANT
+  orderId   String?
+  createdAt DateTime @default(now())
+  @@unique([userId, courseId])
+}
+
+model Order {
+  id                String   @id @default(cuid())
+  userId            String
+  courseId          String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course            Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  amountPaise       Int
+  currency          String   @default("INR")
+  status            String   @default("CREATED") // CREATED | PAID | FAILED
+  provider          String   @default("razorpay") // razorpay | demo
+  razorpayOrderId   String?  @unique
+  razorpayPaymentId String?
+  createdAt         DateTime @default(now())
+  paidAt            DateTime?
+  @@index([userId])
+}
+
+model Progress {
+  id          String   @id @default(cuid())
+  userId      String
+  chapterId   String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter     Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  positionSec Int      @default(0)
+  completed   Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+  @@unique([userId, chapterId])
+}
+
+model Enquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  interest  String
+  message   String?
+  consent   Boolean  @default(false)
+  status    String   @default("NEW")
+  createdAt DateTime @default(now())
+}
+
+model WebinarRegistration {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  topic     String
+  createdAt DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
