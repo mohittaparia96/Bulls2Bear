@@ -6,16 +6,19 @@ import MobileMenu from './MobileMenu';
 export function Brand() {
   return (
     <Link href="/" className="brand" aria-label="bulls2bear home">
-      <Image src="/logo.jpg" alt="" width={44} height={44} priority />
-      <span>bulls<span className="two">2</span>bear<small>TRADE SMART. LEARN. GROW.</small></span>
+      <Image src="/logo-mark.jpg" alt="" width={46} height={46} priority />
+      <span className="brand-text">
+        <span className="brand-name">bulls<span className="two">2</span>bear</span>
+        <span className="brand-tag">TRADE SMART. LEARN. GROW.</span>
+      </span>
     </Link>
   );
 }
 
-const links = [
+export const navLinks = [
   { href: '/courses', label: 'Courses' },
-  { href: '/#how', label: 'How it works' },
-  { href: '/#live', label: 'Live learning' },
+  { href: '/shorts', label: 'Shorts', badge: 'NEW' },
+  { href: '/about', label: 'About us' },
   { href: '/#faq', label: 'FAQ' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -27,7 +30,9 @@ export default async function Header() {
       <div className="wrap header-inner">
         <Brand />
         <nav className="nav" aria-label="Main">
-          {links.map((l) => <Link key={l.href} href={l.href}>{l.label}</Link>)}
+          {navLinks.map((l) => (
+            <Link key={l.href} href={l.href}>{l.label}{l.badge && <span className="new">{l.badge}</span>}</Link>
+          ))}
         </nav>
         <div className="header-cta">
           {user ? (
@@ -39,10 +44,10 @@ export default async function Header() {
           ) : (
             <>
               <Link href="/login" className="btn btn-ghost btn-sm hide-m">Log in</Link>
-              <Link href="/signup" className="btn btn-primary btn-sm">Start free</Link>
+              <Link href="/signup" className="btn btn-primary btn-sm hide-s">Start free</Link>
             </>
           )}
-          <MobileMenu links={links} loggedIn={!!user} />
+          <MobileMenu links={navLinks} loggedIn={!!user} isAdmin={user?.role === 'ADMIN'} />
         </div>
       </div>
     </header>

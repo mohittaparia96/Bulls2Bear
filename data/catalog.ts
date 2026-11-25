@@ -3,13 +3,26 @@
 export type SeedChapter = { slug: string; title: string; summary: string; min: number; free?: boolean };
 export type SeedCourse = {
   slug: string; title: string; subtitle: string; category: string; level: string; description: string;
-  outcomes: string[]; price: number; mrp: number; accent: 'green' | 'red' | 'gold'; icon: string; chapters: SeedChapter[];
+  outcomes: string[]; price: number; mrp: number; accent: 'green' | 'lime' | 'gold' | 'cyan' | 'violet' | 'pink'; icon: string; chapters: SeedChapter[];
 };
 
 export const catalog: SeedCourse[] = [
   {
+    // A fully FREE course (price 0): every chapter is open, no checkout needed.
+    slug: 'market-basics-starter', title: 'Market Basics Starter Kit', subtitle: 'Your free first step into the stock market',
+    category: 'Foundation', level: 'Beginner', icon: '🚀', accent: 'lime', price: 0, mrp: 0,
+    description: 'A free, no-jargon crash course: what bull and bear markets are, what moves prices, and the beginner mistakes to avoid before you invest a rupee.',
+    outcomes: ['The difference between bull and bear markets', 'What really moves a stock price', 'How to build your first watchlist', 'The 5 most common beginner mistakes'],
+    chapters: [
+      { slug: 'bull-vs-bear', title: 'Bull vs Bear Markets', summary: 'The two moods of every market, explained with real Nifty history.', min: 7, free: true },
+      { slug: 'what-moves-prices', title: 'What Moves Stock Prices?', summary: 'Earnings, news, interest rates and crowd psychology.', min: 9, free: true },
+      { slug: 'first-watchlist', title: 'Build Your First Watchlist', summary: 'Pick, track and learn from 10 stocks — without buying any.', min: 8, free: true },
+      { slug: 'beginner-mistakes', title: '5 Beginner Mistakes to Avoid', summary: 'Tips groups, over-trading, no stop-loss and more.', min: 10, free: true },
+    ],
+  },
+  {
     slug: 'stock-market-foundations', title: 'Stock Market Foundations', subtitle: 'From zero to confidently placing your first trade',
-    category: 'Foundation', level: 'Beginner', icon: '◈', accent: 'green', price: 1499, mrp: 2999,
+    category: 'Foundation', level: 'Beginner', icon: '📊', accent: 'green', price: 1499, mrp: 2999,
     description: 'Understand how Indian markets really work — exchanges, indices, order types, demat accounts, settlement and the language every investor needs before risking a single rupee.',
     outcomes: ['How NSE, BSE, SEBI and brokers fit together', 'Market, limit, stop-loss and GTT orders', 'Reading a stock quote and market depth', 'Building a simple, risk-aware first portfolio'],
     chapters: [
@@ -24,7 +37,7 @@ export const catalog: SeedCourse[] = [
   },
   {
     slug: 'technical-analysis-essentials', title: 'Technical Analysis Essentials', subtitle: 'Read price charts like a professional',
-    category: 'Technical Analysis', level: 'Beginner → Intermediate', icon: '⌁', accent: 'green', price: 2999, mrp: 5999,
+    category: 'Technical Analysis', level: 'Beginner → Intermediate', icon: '🕯️', accent: 'cyan', price: 2999, mrp: 5999,
     description: 'Learn market structure, candlesticks, support & resistance, trendlines, volume and indicators — and, more importantly, when not to trust them.',
     outcomes: ['Identify trend, range and reversal structures', 'Draw support/resistance and trendlines objectively', 'Use RSI, MACD and moving averages in context', 'Build a rules-based chart checklist'],
     chapters: [
@@ -41,7 +54,7 @@ export const catalog: SeedCourse[] = [
   },
   {
     slug: 'futures-options-foundations', title: 'Futures & Options Foundations', subtitle: 'Derivatives demystified — the right way',
-    category: 'F&O', level: 'Intermediate', icon: '⇄', accent: 'red', price: 3999, mrp: 7999,
+    category: 'F&O', level: 'Intermediate', icon: '⚡', accent: 'gold', price: 3999, mrp: 7999,
     description: 'Build a rock-solid understanding of futures, calls, puts, expiry, moneyness, margins and option payoffs before you ever touch a derivatives contract.',
     outcomes: ['How futures pricing, margin and MTM work', 'Calls, puts, premium, strike and expiry', 'Payoff diagrams for every basic position', 'Why most retail F&O traders lose — and how to avoid it'],
     chapters: [
@@ -56,7 +69,7 @@ export const catalog: SeedCourse[] = [
   },
   {
     slug: 'options-greeks-risk', title: 'Options Greeks & Risk Management', subtitle: 'Think in probabilities, not predictions',
-    category: 'F&O', level: 'Advanced', icon: 'Δ', accent: 'gold', price: 4999, mrp: 9999,
+    category: 'F&O', level: 'Advanced', icon: '🧮', accent: 'violet', price: 4999, mrp: 9999,
     description: 'Master delta, gamma, theta, vega and implied volatility, then use them to size positions and build defined-risk strategies.',
     outcomes: ['Intuition for each Greek with live charts', 'Implied volatility, IV crush and event risk', 'Spreads, straddles, strangles and iron condors', 'Position sizing and max-loss planning'],
     chapters: [
@@ -71,7 +84,7 @@ export const catalog: SeedCourse[] = [
   },
   {
     slug: 'trading-psychology', title: 'Trading Psychology & Discipline', subtitle: 'Master the trader behind the screen',
-    category: 'Mindset', level: 'All levels', icon: '◎', accent: 'gold', price: 999, mrp: 1999,
+    category: 'Mindset', level: 'All levels', icon: '🧠', accent: 'pink', price: 999, mrp: 1999,
     description: 'Create a repeatable process for journaling, managing emotions, handling losing streaks and reviewing decisions objectively.',
     outcomes: ['Recognise FOMO, revenge trading and overconfidence', 'Build and maintain a trading journal', 'Pre-market and post-market routines', 'Handling drawdowns without blowing up'],
     chapters: [
@@ -84,7 +97,7 @@ export const catalog: SeedCourse[] = [
   },
   {
     slug: 'mutual-funds-investing', title: 'Mutual Funds & Long-Term Investing', subtitle: 'Grow wealth slowly, steadily and sensibly',
-    category: 'Investing', level: 'Beginner', icon: '▤', accent: 'green', price: 1299, mrp: 2499,
+    category: 'Investing', level: 'Beginner', icon: '🌱', accent: 'lime', price: 1299, mrp: 2499,
     description: 'Understand SIPs, index funds, asset allocation, taxation and how to evaluate a fund — the calm, long-term side of the market.',
     outcomes: ['Equity, debt, hybrid and index funds', 'SIP, STP, SWP and lumpsum strategies', 'Expense ratio, direct vs regular plans', 'Capital gains tax basics in India'],
     chapters: [

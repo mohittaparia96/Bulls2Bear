@@ -31,7 +31,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ chap
   try { claims = await verifyStreamToken(token); } catch { return deny(401); }
   if (claims.cid !== chapterId) return deny();
 
-  const chapter = await prisma.chapter.findUnique({ where: { id: chapterId } });
+  // The id is either a course chapter or a (always free) short.
+  const chapter =
+    (await prisma.chapter.findUnique({ where: { id: chapterId } })) ??
+    (await prisma.short.findUnique({ where: { id: chapterId } }).then((s) => (s ? { videoId: s.videoId, isFree: true } : null)));
   if (!chapter) return deny(404);
   if (!chapter.isFree) {
     const user = await getCurrentUser();

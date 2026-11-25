@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import { getCurrentUser, hasCourseAccess } from '@/lib/auth';
 import { CourseThumb } from '@/components/CourseCard';
 import BuyButton from '@/components/BuyButton';
+import ShortCard from '@/components/ShortCard';
 import { inr, minutes, discountPct } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
@@ -25,6 +26,7 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
 
   const user = await getCurrentUser();
   const owned = await hasCourseAccess(user, course.id);
+  const isFreeCourse = course.pricePaise === 0;
   const progress = user ? await prisma.progress.findMany({ where: { userId: user.id, chapterId: { in: course.chapters.map((c) => c.id) } } }) : [];
   const done = new Set(progress.filter((p) => p.completed).map((p) => p.chapterId));
   const total = course.chapters.reduce((s, c) => s + c.durationSec, 0);
@@ -33,37 +35,51 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
   const off = discountPct(course.pricePaise, course.mrpPaise);
   const firstFree = course.chapters.find((c) => c.isFree);
   const nextUp = course.chapters.find((c) => !done.has(c.id)) ?? course.chapters[0];
-  const accent = course.accent === 'red' ? 'var(--red)' : course.accent === 'gold' ? 'var(--gold)' : 'var(--green)';
-  const index = (await prisma.course.findMany({ select: { id: true }, orderBy: { sortOrder: 'asc' } })).findIndex((c) => c.id === course.id);
+  const [index, related] = await Promise.all([
+    prisma.course.findMany({ select: { id: true }, orderBy: { sortOrder: 'asc' } }).then((all) => all.findIndex((c) => c.id === course.id)),
+    prisma.short.findMany({ where: { courseSlug: course.slug, published: true }, orderBy: { sortOrder: 'asc' } }),
+  ]);
+  const canPlay = (isFree: boolean) => owned || isFree;
 
   return (
     <>
-      <section className="course-hero" style={{ ['--accent' as string]: accent }}>
+      <section className={`course-hero acc-${course.accent}`}>
         <div className="wrap course-hero-inner">
           <div>
             <div className="crumbs"><Link href="/courses">Courses</Link> / {course.category}</div>
             {purchased && <p className="notice ok" style={{ marginBottom: 20 }}>🎉 Payment successful — you now have lifetime access to this course. A receipt has been emailed to you.</p>}
-            <h1>{course.title}</h1>
+            <span className="pill accent" style={{ marginBottom: 16 }}>{course.icon} {course.category}</span>
+            <h1 style={{ marginTop: 14 }}>{course.title}</h1>
             <p className="subtitle">{course.subtitle}</p>
             <p className="desc">{course.description}</p>
             <div className="course-facts">
-              <span>▤ <b>{course.chapters.length}</b> chapters</span>
-              <span>◷ <b>{minutes(total)}</b> of video</span>
-              <span>◆ <b>{course.level}</b></span>
-              <span>▶ <b>{freeCount}</b> free previews</span>
-              <span>✎ {course.instructor}</span>
+              <span>📚 <b>{course.chapters.length}</b> chapters</span>
+              <span>⏱ <b>{minutes(total)}</b> of video</span>
+              <span>🎯 <b>{course.level}</b></span>
+              <span>▶ <b>{isFreeCourse ? 'All' : freeCount}</b> free {isFreeCourse ? 'lessons' : 'previews'}</span>
+              <span>👨‍🏫 {course.instructor}</span>
             </div>
           </div>
 
           <aside className={`buy-card course-card acc-${course.accent}`} style={{ transform: 'none' }}>
-            <CourseThumb course={course} seed={index + 3} owned={owned} />
+            <CourseThumb course={course} seed={index + 3} owned={owned && !isFreeCourse} />
             <div className="buy-body">
-              {owned ? (
+              {owned && !isFreeCourse ? (
                 <>
-                  <p className="green" style={{ fontWeight: 700 }}>✓ You own this course</p>
+                  <p className="green" style={{ fontWeight: 800 }}>✓ You own this course</p>
                   <Link href={`/learn/${course.slug}/${nextUp.slug}`} className="btn btn-primary btn-lg btn-block">{done.size ? 'Continue learning →' : 'Start learning →'}</Link>
                   <div className="bar"><i style={{ width: `${Math.round((done.size / course.chapters.length) * 100)}%` }} /></div>
                   <p className="muted" style={{ fontSize: 13 }}>{done.size} of {course.chapters.length} chapters completed</p>
+                </>
+              ) : isFreeCourse ? (
+                <>
+                  <div className="price free-price">FREE</div>
+                  <Link href={`/learn/${course.slug}/${nextUp.slug}`} className="btn btn-primary btn-lg btn-block">{done.size ? 'Continue learning →' : '🚀 Start free course'}</Link>
+                  <div className="buy-includes">
+                    <span>All {course.chapters.length} chapters — no payment needed</span>
+                    <span>{user ? 'Progress saved to your account' : 'Sign up free to save your progress'}</span>
+                    <span>Watch on mobile, tablet &amp; desktop</span>
+                  </div>
                 </>
               ) : (
                 <>
@@ -85,44 +101,63 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
       </section>
 
       <div className="wrap course-layout">
-        <div>
-          <section className="content-section">
-            <h2>What you’ll learn</h2>
-            <div className="outcomes">{outcomes.map((o) => <span key={o}>{o}</span>)}</div>
-          </section>
-
-          <section className="content-section" style={{ paddingTop: 0 }}>
-            <h2>Course curriculum</h2>
-            <p className="muted" style={{ marginTop: -12, marginBottom: 20 }}>{course.chapters.length} chapters · {minutes(total)} total</p>
-            <div className="curriculum">
+        <div className="content-section acc-stack">
+          {/* Curriculum — each chapter expands to show its summary and a play/unlock action */}
+          <details className="acc-block" open>
+            <summary>
+              <div><h2>📚 Course curriculum</h2><small>{course.chapters.length} chapters · {minutes(total)} total · tap a chapter for details</small></div>
+            </summary>
+            <div className="acc-body">
               {course.chapters.map((ch, i) => {
-                const open = owned || ch.isFree;
-                const row = (
-                  <>
-                    <span className="num">{done.has(ch.id) ? '✓' : i + 1}</span>
-                    <span className="info"><b>{ch.title}</b><small>{ch.summary}</small></span>
-                    <span className="dur">{minutes(ch.durationSec)}</span>
-                    {done.has(ch.id) ? <span className="state done">Done</span>
-                      : ch.isFree && !owned ? <span className="state free">▶ Free</span>
-                      : open ? <span className="state free">▶ Play</span>
-                      : <span className="state locked">🔒 Locked</span>}
-                  </>
+                const open = canPlay(ch.isFree);
+                return (
+                  <details key={ch.id} className={`acc-item ${open ? 'open' : ''}`}>
+                    <summary>
+                      <span className="num">{done.has(ch.id) ? '✓' : i + 1}</span>
+                      <span className="info">{ch.title}<small>⏱ {minutes(ch.durationSec)}</small></span>
+                      {done.has(ch.id) ? <span className="state done">Done</span>
+                        : ch.isFree && !owned ? <span className="state free">▶ Free</span>
+                        : open ? <span className="state free">▶ Play</span>
+                        : <span className="state locked">🔒 Locked</span>}
+                      <span className="chev" aria-hidden>+</span>
+                    </summary>
+                    <div className="detail">
+                      <span>{ch.summary}</span>
+                      {open
+                        ? <Link href={`/learn/${course.slug}/${ch.slug}`} className="btn btn-primary btn-sm">▶ Play chapter</Link>
+                        : <Link href={`/learn/${course.slug}/${ch.slug}`} className="btn btn-ghost btn-sm">🔒 Unlock to watch</Link>}
+                    </div>
+                  </details>
                 );
-                return open
-                  ? <Link key={ch.id} href={`/learn/${course.slug}/${ch.slug}`} className="chapter-row open">{row}</Link>
-                  : <div key={ch.id} className="chapter-row">{row}</div>;
               })}
             </div>
-          </section>
+          </details>
 
-          <section className="content-section" style={{ paddingTop: 0, paddingBottom: 90 }}>
-            <h2>Who is this for?</h2>
-            <p className="muted" style={{ maxWidth: 680 }}>
-              Retail investors and aspiring traders in India who want a structured, honest understanding of {course.category.toLowerCase()} concepts —
-              without stock tips, hype or shortcuts. If you can use a smartphone trading app, you can follow this course.
-            </p>
-            <p className="notice info" style={{ marginTop: 22, fontSize: 13 }}>Educational content only. Not investment advice. Trading in securities, especially derivatives, involves substantial risk of loss.</p>
-          </section>
+          <details className="acc-block">
+            <summary><div><h2>🎯 What you’ll learn</h2><small>{outcomes.length} key outcomes</small></div></summary>
+            <div className="acc-body"><div className="outcomes">{outcomes.map((o) => <span key={o}>{o}</span>)}</div></div>
+          </details>
+
+          <details className="acc-block">
+            <summary><div><h2>🙋 Who is this for?</h2><small>Is this course right for you?</small></div></summary>
+            <div className="acc-body">
+              <p className="muted" style={{ maxWidth: 680 }}>
+                Retail investors and aspiring traders in India who want a structured, honest understanding of {course.category.toLowerCase()} concepts —
+                without stock tips, hype or shortcuts. If you can use a smartphone trading app, you can follow this course.
+              </p>
+              <p className="notice info" style={{ marginTop: 18, fontSize: 13 }}>Educational content only. Not investment advice. Trading in securities, especially derivatives, involves substantial risk of loss.</p>
+            </div>
+          </details>
+
+          {related.length > 0 && (
+            <section style={{ marginTop: 26 }}>
+              <h2 style={{ fontSize: 23, marginBottom: 6 }}>⚡ Quick previews</h2>
+              <p className="muted" style={{ marginBottom: 18, fontSize: 14.5 }}>Under-a-minute shorts on topics from this course.</p>
+              <div className="shorts-rail">
+                {related.map((s) => <ShortCard key={s.id} short={s} href={`/shorts?play=${s.slug}`} />)}
+              </div>
+            </section>
+          )}
         </div>
         <div />
       </div>

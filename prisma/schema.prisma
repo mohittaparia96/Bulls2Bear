@@ -58,7 +58,7 @@ model Course {
   outcomes    String       // JSON array of strings
   pricePaise  Int
   mrpPaise    Int
-  accent      String       @default("green") // green | red | gold
+  accent      String       @default("green") // green | lime | gold | cyan | violet | pink
   icon        String       @default("◈")
   instructor  String       @default("bulls2bear Faculty")
   sortOrder   Int          @default(0)
@@ -67,6 +67,22 @@ model Course {
   chapters    Chapter[]
   enrollments Enrollment[]
   orders      Order[]
+}
+
+// Short-form videos (under a minute, vertical 9:16). Always free to watch.
+model Short {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  category    String
+  durationSec Int
+  emoji       String   @default("⚡")
+  accent      String   @default("green")
+  courseSlug  String?  // related long-form course
+  videoId     String
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(true)
+  createdAt   DateTime @default(now())
 }
 
 model Chapter {

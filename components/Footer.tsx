@@ -21,8 +21,9 @@ export default function Footer() {
             <h4>Learn</h4>
             <div className="footer-links">
               <Link href="/courses">All courses</Link>
+              <Link href="/courses?price=free">Free courses</Link>
               <Link href="/courses?cat=F%26O">Futures &amp; Options</Link>
-              <Link href="/courses?cat=Technical%20Analysis">Technical analysis</Link>
+              <Link href="/shorts">⚡ Shorts (under 1 min)</Link>
               <Link href="/#live">Webinars</Link>
               <Link href="/dashboard">My learning</Link>
             </div>
@@ -30,6 +31,7 @@ export default function Footer() {
           <div>
             <h4>Company</h4>
             <div className="footer-links">
+              <Link href="/about">About us</Link>
               <Link href="/contact">Contact us</Link>
               <Link href="/terms">Terms of use</Link>
               <Link href="/privacy">Privacy policy</Link>

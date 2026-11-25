@@ -1,36 +1,35 @@
-import Link from 'next/link';
 import type { Metadata } from 'next';
-import CourseCard from '@/components/CourseCard';
+import CourseExplorer from '@/components/CourseExplorer';
+import LibraryTabs from '@/components/LibraryTabs';
 import { getCurrentUser } from '@/lib/auth';
 import { listCourses, ownedCourseIds } from '@/lib/queries';
+import { prisma } from '@/lib/prisma';
 
-export const metadata: Metadata = { title: 'All courses', description: 'Stock market, technical analysis, F&O, options Greeks, mutual funds and trading psychology courses.' };
+export const metadata: Metadata = { title: 'Video library — courses', description: 'Long-form stock market courses: basics, technical analysis, F&O, options Greeks, mutual funds and trading psychology.' };
 export const dynamic = 'force-dynamic';
 
-export default async function CoursesPage({ searchParams }: { searchParams: Promise<{ cat?: string }> }) {
-  const { cat } = await searchParams;
+export default async function CoursesPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+  const sp = await searchParams;
   const user = await getCurrentUser();
-  const [courses, owned] = await Promise.all([listCourses(), ownedCourseIds(user)]);
-  const cats = ['All', ...Array.from(new Set(courses.map((c) => c.category)))];
-  const active = cat && cats.includes(cat) ? cat : 'All';
-  const shown = active === 'All' ? courses : courses.filter((c) => c.category === active);
+  const [courses, owned, shortsCount] = await Promise.all([listCourses(), ownedCourseIds(user), prisma.short.count({ where: { published: true } })]);
+
+  const data = courses.map((c, index) => ({
+    id: c.id, slug: c.slug, title: c.title, description: c.description, category: c.category, level: c.level, icon: c.icon,
+    accent: c.accent, pricePaise: c.pricePaise, mrpPaise: c.mrpPaise, chapters: c.chapters, owned: owned.has(c.id), index,
+  }));
 
   return (
     <div className="wrap">
       <div className="page-head">
-        <span className="kicker">The academy</span>
-        <h1 style={{ marginTop: 12 }}>All courses</h1>
-        <p>Every course includes free preview chapters. Buy once, learn for life.</p>
+        <span className="kicker">📚 Video library</span>
+        <h1>Learn at your pace.</h1>
+        <p>Deep-dive courses for serious learning, or bite-sized shorts when you have a minute.</p>
       </div>
-      <div className="filters">
-        {cats.map((c) => (
-          <Link key={c} href={c === 'All' ? '/courses' : `/courses?cat=${encodeURIComponent(c)}`} className={`filter ${c === active ? 'active' : ''}`} scroll={false}>{c}</Link>
-        ))}
-      </div>
-      <div className="course-grid" style={{ paddingBottom: 100 }}>
-        {shown.map((c, i) => <CourseCard key={c.id} course={c} index={courses.indexOf(c)} owned={owned.has(c.id)} />)}
-        {shown.length === 0 && <p className="muted">No courses in this category yet.</p>}
-      </div>
+      <LibraryTabs active="courses" courses={courses.length} shorts={shortsCount} />
+      <CourseExplorer
+        courses={data}
+        initial={{ q: sp.q ?? '', cat: sp.cat ?? 'All', price: sp.price ?? 'all', level: sp.level ?? 'all', sort: sp.sort ?? 'recommended' }}
+      />
     </div>
   );
 }

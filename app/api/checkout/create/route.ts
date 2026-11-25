@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) return json({ error: 'Invalid course.' }, 400);
   const course = await prisma.course.findFirst({ where: { id: parsed.data.courseId, published: true } });
   if (!course) return json({ error: 'Course not found.' }, 404);
+  if (course.pricePaise <= 0) return json({ error: 'This course is free — just start watching!' }, 400);
   if (await hasCourseAccess(user, course.id)) return json({ error: 'You already own this course.', owned: true }, 409);
 
   // Price always comes from the database, never from the browser.

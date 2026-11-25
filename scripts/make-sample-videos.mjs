@@ -54,5 +54,48 @@ for (const ch of chapters) {
   process.stdout.write(`✓ ${ch.videoId}\n`);
 }
 
+// ── Vertical 9:16 shorts ──
+const accentHex = { green: '0x22e36b', lime: '0xb8f34a', gold: '0xffc83d', cyan: '0x2ee6d6', violet: '0xa58bff', pink: '0xff6ad5' };
+const mark = resolve('public/logo-mark.jpg');
+const wrapTitle = (t, max = 18) => {
+  const lines = []; let cur = '';
+  for (const w of t.split(' ')) { if ((cur + ' ' + w).trim().length > max && cur) { lines.push(cur); cur = w; } else cur = (cur + ' ' + w).trim(); }
+  if (cur) lines.push(cur);
+  return lines.slice(0, 3);
+};
+const shortsList = await prisma.short.findMany({ orderBy: { sortOrder: 'asc' } });
+for (const s of shortsList) {
+  const out = join(outDir, s.videoId);
+  if (existsSync(out) && !force) continue;
+  const col = accentHex[s.accent] ?? accentHex.green;
+  const d = s.durationSec;
+  const f = font ? `fontfile='${esc(font)}':` : '';
+  const lines = wrapTitle(s.title);
+  const files = lines.map((l, i) => { const p = join(tmp, `${s.id}-t${i}.txt`); writeFileSync(p, l); return p; });
+  const c1 = join(tmp, `${s.id}-c.txt`); writeFileSync(c1, `${s.category.toUpperCase()}  |  UNDER A MINUTE`);
+  const chain = [
+    `drawbox=x=0:y=0:w=iw*t/${d}:h=10:color=${col}@1:t=fill`,
+    `drawtext=${f}textfile='${esc(c1)}':x=(w-tw)/2:y=470:fontsize=24:fontcolor=${col}:box=1:boxcolor=black@0.55:boxborderw=10`,
+    ...files.map((p, i) => `drawtext=${f}textfile='${esc(p)}':x=(w-tw)/2:y=${530 + i * 62}:fontsize=50:fontcolor=white`),
+    `drawtext=${f}text='sample short - bulls2bear.com':x=(w-tw)/2:y=h-120:fontsize=22:fontcolor=0x94a3b8`,
+    `drawtext=${f}text='%{pts\\:hms}':x=(w-tw)/2:y=h-80:fontsize=22:fontcolor=0x64748b`,
+  ].join(',');
+  const graph = `[1:v]scale=300:300[l];[0:v][l]overlay=x=(W-w)/2:y=110:shortest=1,${chain}[v]`;
+  const args = [
+    '-y', '-loglevel', 'error',
+    '-f', 'lavfi', '-i', `gradients=s=540x960:c0=${col}:c1=0x05080d:x0=270:y0=0:x1=270:y1=640:d=${d}:r=15,format=yuv420p`,
+    '-loop', '1', '-i', mark,
+    '-f', 'lavfi', '-i', `sine=frequency=330:sample_rate=44100:duration=${d}`,
+    '-filter_complex', `${graph};[2:a]volume=0.03[a]`,
+    '-map', '[v]', '-map', '[a]',
+    '-t', String(d), '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '30', '-pix_fmt', 'yuv420p', '-c:a', 'aac', '-b:a', '48k', '-shortest',
+    '-movflags', '+faststart', out,
+  ];
+  const r = spawnSync(ffmpeg, args, { stdio: 'inherit' });
+  if (r.status !== 0) { console.error('ffmpeg failed for', s.videoId); process.exitCode = 1; break; }
+  made++;
+  process.stdout.write(`✓ ${s.videoId}\n`);
+}
+
 console.log(`Done. Generated ${made} video(s) in ${outDir}`);
 await prisma.$disconnect();

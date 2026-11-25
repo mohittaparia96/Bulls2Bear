@@ -7,12 +7,12 @@ export type CardCourse = {
 };
 
 /** Decorative candlestick strip used on course thumbnails (deterministic per seed). */
-export function Candles({ seed = 1, accent = 'green' }: { seed?: number; accent?: string }) {
+export function Candles({ seed = 1 }: { seed?: number }) {
   let x = seed * 9301 + 49297;
   const rnd = () => ((x = (x * 9301 + 49297) % 233280) / 233280);
   let y = 60;
   const bars = Array.from({ length: 22 }, (_, i) => {
-    const up = rnd() > (accent === 'red' ? 0.55 : 0.4);
+    const up = rnd() > 0.38;
     const h = 6 + rnd() * 16;
     y = Math.max(15, Math.min(85, y + (up ? -h / 2 : h / 2)));
     return { i, up, h, y };
@@ -29,15 +29,17 @@ export function Candles({ seed = 1, accent = 'green' }: { seed?: number; accent?
   );
 }
 
-export function CourseThumb({ course, seed, owned }: { course: Pick<CardCourse, 'icon' | 'accent' | 'category' | 'chapters'>; seed: number; owned?: boolean }) {
+export function CourseThumb({ course, seed, owned }: { course: Pick<CardCourse, 'icon' | 'category' | 'chapters' | 'pricePaise'>; seed: number; owned?: boolean }) {
   const free = course.chapters.filter((c) => c.isFree).length;
   return (
     <div className="course-thumb">
-      <Candles seed={seed} accent={course.accent} />
+      <Candles seed={seed} />
       <span className="icon">{course.icon}</span>
       <div className="badges">
         <span className="pill accent">{course.category}</span>
-        {owned ? <span className="pill owned">✓ Owned</span> : free > 0 && <span className="pill">▶ {free} free</span>}
+        {owned ? <span className="pill owned">✓ Owned</span>
+          : course.pricePaise === 0 ? <span className="pill free">100% Free</span>
+          : free > 0 && <span className="pill">▶ {free} free</span>}
       </div>
     </div>
   );
@@ -53,14 +55,14 @@ export default function CourseCard({ course, index, owned }: { course: CardCours
         <h3>{course.title}</h3>
         <p>{course.description}</p>
         <div className="course-meta">
-          <span>▤ {course.chapters.length} chapters</span>
-          <span>◷ {minutes(total)}</span>
-          <span>◆ {course.level}</span>
+          <span>📚 {course.chapters.length} chapters</span>
+          <span>⏱ {minutes(total)}</span>
+          <span>🎯 {course.level}</span>
         </div>
         <div className="course-foot">
-          {owned ? <span className="price green" style={{ fontSize: 17 }}>Continue learning</span> : (
-            <span className="price">{inr(course.pricePaise)}{off > 0 && <><s>{inr(course.mrpPaise)}</s><span className="off">{off}% OFF</span></>}</span>
-          )}
+          {owned ? <span className="price green" style={{ fontSize: 17 }}>Continue learning</span>
+            : course.pricePaise === 0 ? <span className="price free-price">FREE</span>
+            : <span className="price">{inr(course.pricePaise)}{off > 0 && <><s>{inr(course.mrpPaise)}</s><span className="off">{off}% OFF</span></>}</span>}
           <span className="card-arrow">→</span>
         </div>
       </div>

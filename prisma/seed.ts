@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 import { catalog } from '../data/catalog';
+import { shorts } from '../data/shorts';
 
 const prisma = new PrismaClient();
 
@@ -25,6 +26,14 @@ async function main() {
     }
   }
 
+  for (const [i, s] of shorts.entries()) {
+    const data = {
+      title: s.title, category: s.category, durationSec: s.sec, emoji: s.emoji, accent: s.accent,
+      courseSlug: s.course ?? null, videoId: `short--${s.slug}.mp4`, sortOrder: i,
+    };
+    await prisma.short.upsert({ where: { slug: s.slug }, update: data, create: { slug: s.slug, ...data } });
+  }
+
   const adminEmail = (process.env.ADMIN_EMAIL || 'admin@bulls2bear.com').toLowerCase();
   const adminPassword = process.env.ADMIN_PASSWORD || 'ChangeMe@12345';
   await prisma.user.upsert({
@@ -46,7 +55,7 @@ async function main() {
     create: { userId: demo.id, courseId: ta.id, source: 'ADMIN_GRANT' },
   });
 
-  console.log(`Seeded ${catalog.length} courses. Admin: ${adminEmail} | Demo student: demo@bulls2bear.com / Demo@12345`);
+  console.log(`Seeded ${catalog.length} courses, ${shorts.length} shorts. Admin: ${adminEmail} | Demo student: demo@bulls2bear.com / Demo@12345`);
 }
 
 main().finally(() => prisma.$disconnect());

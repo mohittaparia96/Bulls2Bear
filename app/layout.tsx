@@ -22,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-IN" className={`${inter.variable} ${poppins.variable}`}>
       <body>
+        <div className="aurora" aria-hidden><span /><span /><span /></div>
         <Header />
         <div id="mobile-nav-slot" />
         <main>{children}</main>

@@ -5,7 +5,7 @@ export default function AuthShell({ title, sub, children }: { title: string; sub
   return (
     <div className="auth-wrap">
       <div className="auth-side">
-        <Image src="/logo.jpg" alt="bulls2bear" width={180} height={180} />
+        <Image src="/logo-wide.jpg" alt="bulls2bear" width={420} height={220} />
         <h2>Trade smart.<br /><span className="grad-text">Learn. Grow.</span></h2>
         <p className="muted" style={{ maxWidth: 420 }}>Join learners across India building real market understanding — one structured lesson at a time.</p>
         <div className="lock-list" style={{ maxWidth: 420 }}>
