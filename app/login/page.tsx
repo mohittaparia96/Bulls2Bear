@@ -17,8 +17,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       {!paymentsLive() && (
         <div className="demo-creds">
           <b>Demo accounts (preview only)</b><br />
-          Student: <code>demo@bulls2bear.com</code> / <code>Demo@12345</code><br />
-          Admin: <code>admin@bulls2bear.com</code> / <code>ChangeMe@12345</code>
+          Student: <code>demo@bulls2bear.com</code> / <code>Demo@12345</code>
         </div>
       )}
     </AuthShell>

@@ -6,7 +6,10 @@ import { config } from './config';
 export function badOrigin(req: NextRequest): NextResponse | null {
   const origin = req.headers.get('origin');
   if (!origin) return null; // same-origin fetches from some browsers omit Origin on GET; POST from our pages always sends it
-  const allowed = new Set([new URL(config.appUrl).origin, req.nextUrl.origin]);
+  // Same-origin = the configured site URL, or the exact host this request was sent to.
+  const host = req.headers.get('x-forwarded-host') ?? req.headers.get('host');
+  const proto = req.headers.get('x-forwarded-proto') ?? req.nextUrl.protocol.replace(':', '');
+  const allowed = new Set([new URL(config.appUrl).origin, req.nextUrl.origin, ...(host ? [`${proto}://${host}`] : [])]);
   if (!allowed.has(origin)) return NextResponse.json({ error: 'Invalid origin.' }, { status: 403 });
   return null;
 }

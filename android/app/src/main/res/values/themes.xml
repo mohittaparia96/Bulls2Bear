@@ -1,0 +1,21 @@
+<resources>
+    <style name="Theme.Bulls2Bear" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/emerald</item>
+        <item name="colorSecondary">@color/saffron</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/text</item>
+        <item name="colorSecondaryContainer">@color/tab_pill</item>
+        <item name="colorOnSecondaryContainer">@color/tab_pill_on</item>
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@color/surface</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">@bool/light_bars</item>
+    </style>
+
+    <style name="Theme.Bulls2Bear.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_bg</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Bulls2Bear</item>
+    </style>
+</resources>

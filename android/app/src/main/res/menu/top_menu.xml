@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_search" android:icon="@drawable/ic_search" android:title="@string/search" app:showAsAction="always" />
+    <item android:id="@+id/action_academy" android:title="🎓  Academy paths" />
+    <item android:id="@+id/action_products" android:title="📱  All courses" />
+    <item android:id="@+id/action_join" android:title="🤝  Join 2 Grow" />
+    <item android:id="@+id/action_about" android:title="👋  About us" />
+    <item android:id="@+id/action_support" android:title="🛟  Support &amp; FAQs" />
+    <item android:id="@+id/action_theme" android:title="🌗  Switch light / dark" />
+    <item android:id="@+id/action_share" android:title="📤  Share the app" />
+    <item android:id="@+id/action_legal" android:title="📄  Terms &amp; policies" />
+</menu>

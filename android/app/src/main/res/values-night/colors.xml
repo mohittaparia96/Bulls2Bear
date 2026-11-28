@@ -1,0 +1,8 @@
+<resources>
+    <color name="bg">#07080B</color>
+    <color name="surface">#12151C</color>
+    <color name="text">#F4F6FA</color>
+    <color name="muted">#9AA3B2</color>
+    <color name="tab_pill">#124A36</color>
+    <color name="tab_pill_on">#D3F3E6</color>
+</resources>

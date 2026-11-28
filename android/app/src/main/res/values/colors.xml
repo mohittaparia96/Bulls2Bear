@@ -1,0 +1,13 @@
+<resources>
+    <color name="emerald">#0B9466</color>
+    <color name="emerald_bright">#2FD897</color>
+    <color name="saffron">#FFB020</color>
+    <color name="saffron_deep">#C25E00</color>
+    <color name="bg">#ECEEF2</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text">#141A2A</color>
+    <color name="muted">#5A6478</color>
+    <color name="splash_bg">#07080B</color>
+    <color name="tab_pill">#D3F3E6</color>
+    <color name="tab_pill_on">#04311F</color>
+</resources>

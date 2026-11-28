@@ -711,3 +711,12 @@ body { transition: background-color .3s ease, color .3s ease; }
 .acc-cyan { --accent: var(--cyan); }
 .acc-violet { --accent: var(--violet); }
 .acc-pink { --accent: var(--pink); }
+
+/* Inside the Android app: the app supplies its own top bar, menu and tabs */
+[data-app] .header, [data-app] #mobile-nav-slot, [data-app] .footer-grid, [data-app] .footer-bottom { display: none !important; }
+[data-app] .footer { padding: 22px 0 30px; }
+[data-app] .disclaimer-bar { margin-top: 0; }
+[data-app] .auth-wrap, [data-app] .learn { min-height: 100vh; }
+[data-app] .learn-side { top: 0; max-height: 100vh; }
+[data-app] .buy-card { top: 20px; }
+[data-app] .anchor, [data-app] [id] { scroll-margin-top: 16px; }

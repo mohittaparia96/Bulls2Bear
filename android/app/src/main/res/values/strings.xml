@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">bulls2bear</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_courses">Courses</string>
+    <string name="tab_shorts">Shorts</string>
+    <string name="tab_research">Research</string>
+    <string name="tab_account">My learning</string>
+    <string name="search">Search</string>
+    <string name="offline_title">You\'re offline</string>
+    <string name="offline_body">Check your internet connection and try again.</string>
+    <string name="retry">Try again</string>
+    <string name="tagline">TRADE SMART. LEARN. GROW.</string>
+    <string name="share_text">Learn the stock market with bulls2bear: %1$s</string>
+</resources>
