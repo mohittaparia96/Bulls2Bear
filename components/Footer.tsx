@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Brand } from './Header';
 import AjaxForm from './AjaxForm';
+import { socials, contact } from '@/data/site';
 
 export default function Footer() {
   return (
@@ -11,10 +12,7 @@ export default function Footer() {
             <Brand />
             <p className="about">Structured, practical stock-market education for Indian retail investors and traders — from your first trade to option Greeks.</p>
             <div className="socials">
-              <a href="#" aria-label="YouTube">▶</a>
-              <a href="#" aria-label="Instagram">◎</a>
-              <a href="#" aria-label="X / Twitter">𝕏</a>
-              <a href="#" aria-label="Telegram">✈</a>
+              {socials.map((x) => <Link key={x.key} href={x.url || `/join#${x.key}`} aria-label={x.label} title={x.label}>{x.icon}</Link>)}
             </div>
           </div>
           <div>
@@ -24,6 +22,8 @@ export default function Footer() {
               <Link href="/courses?price=free">Free courses</Link>
               <Link href="/courses?cat=F%26O">Futures &amp; Options</Link>
               <Link href="/shorts">⚡ Shorts (under 1 min)</Link>
+              <Link href="/academy">Academy learning paths</Link>
+              <Link href="/research">Research</Link>
               <Link href="/#live">Webinars</Link>
               <Link href="/dashboard">My learning</Link>
             </div>
@@ -32,6 +32,8 @@ export default function Footer() {
             <h4>Company</h4>
             <div className="footer-links">
               <Link href="/about">About us</Link>
+              <Link href="/join">Join 2 Grow</Link>
+              <Link href="/support">Support &amp; FAQs</Link>
               <Link href="/contact">Contact us</Link>
               <Link href="/terms">Terms of use</Link>
               <Link href="/privacy">Privacy policy</Link>
@@ -46,7 +48,7 @@ export default function Footer() {
               <input className="input" name="email" type="email" required placeholder="you@email.com" aria-label="Email" />
               <button className="btn btn-primary btn-sm" aria-label="Subscribe">→</button>
             </AjaxForm>
-            <p className="muted" style={{ fontSize: 14, marginTop: 18 }}>✉ <a href="mailto:info@bulls2bear.com" className="link">info@bulls2bear.com</a></p>
+            <p className="muted" style={{ fontSize: 14, marginTop: 18 }}>✉ <a href={`mailto:${contact.email}`} className="link">{contact.email}</a></p>
           </div>
         </div>
         <p className="disclaimer-bar">

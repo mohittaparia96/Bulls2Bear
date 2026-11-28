@@ -5,8 +5,8 @@ import ShortCard, { type ShortData } from './ShortCard';
 
 type Playback = { type: 'html5'; src: string; watermark: string } | { type: 'iframe' | 'vdocipher'; src?: string; otp?: string; playbackInfo?: string; watermark: string };
 
-export default function ShortsExplorer({ shorts, initialPlay, courseTitles }: { shorts: ShortData[]; initialPlay?: string; courseTitles: Record<string, string> }) {
-  const [cat, setCat] = useState('All');
+export default function ShortsExplorer({ shorts, initialPlay, initialCat, courseTitles }: { shorts: ShortData[]; initialPlay?: string; initialCat?: string; courseTitles: Record<string, string> }) {
+  const [cat, setCat] = useState(() => (initialCat && shorts.some((s) => s.category === initialCat) ? initialCat : 'All'));
   const list = useMemo(() => (cat === 'All' ? shorts : shorts.filter((s) => s.category === cat)), [shorts, cat]);
   const cats = useMemo(() => ['All', ...Array.from(new Set(shorts.map((s) => s.category)))], [shorts]);
   const [playing, setPlaying] = useState<number | null>(() => {

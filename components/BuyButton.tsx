@@ -42,7 +42,7 @@ export default function BuyButton({ courseId, courseSlug, price, loggedIn, label
       const rzp = new window.Razorpay({
         key: data.keyId, order_id: data.razorpayOrderId, amount: data.amount, currency: data.currency,
         name: 'bulls2bear', description: data.courseTitle, image: '/logo.jpg', prefill: data.prefill,
-        theme: { color: '#22e36b' },
+        theme: { color: '#0b9466' },
         handler: async (resp: Record<string, string>) => {
           setBusy(true);
           const v = await post('/api/checkout/verify', resp);

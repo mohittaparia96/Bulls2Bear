@@ -2,6 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getCurrentUser } from '@/lib/auth';
 import MobileMenu from './MobileMenu';
+import MegaNav from './MegaNav';
+import ThemeToggle from './ThemeToggle';
 
 export function Brand() {
   return (
@@ -15,26 +17,25 @@ export function Brand() {
   );
 }
 
-export const navLinks = [
-  { href: '/courses', label: 'Courses' },
-  { href: '/shorts', label: 'Shorts', badge: 'NEW' },
-  { href: '/about', label: 'About us' },
-  { href: '/#faq', label: 'FAQ' },
-  { href: '/contact', label: 'Contact' },
-];
+export function SearchBox({ className = '' }: { className?: string }) {
+  return (
+    <form action="/search" method="get" role="search" className={`header-search ${className}`}>
+      <span aria-hidden>⌕</span>
+      <input name="q" type="search" placeholder="Search courses, shorts, topics…" aria-label="Search" />
+    </form>
+  );
+}
 
 export default async function Header() {
   const user = await getCurrentUser();
   return (
     <header className="header">
-      <div className="wrap header-inner">
+      <div className="header-inner">
         <Brand />
-        <nav className="nav" aria-label="Main">
-          {navLinks.map((l) => (
-            <Link key={l.href} href={l.href}>{l.label}{l.badge && <span className="new">{l.badge}</span>}</Link>
-          ))}
-        </nav>
+        <MegaNav />
         <div className="header-cta">
+          <SearchBox className="hide-m" />
+          <ThemeToggle />
           {user ? (
             <>
               {user.role === 'ADMIN' && <Link href="/admin" className="btn btn-ghost btn-sm hide-m">Admin</Link>}
@@ -44,10 +45,10 @@ export default async function Header() {
           ) : (
             <>
               <Link href="/login" className="btn btn-ghost btn-sm hide-m">Log in</Link>
-              <Link href="/signup" className="btn btn-primary btn-sm hide-s">Start free</Link>
+              <Link href="/signup" className="btn btn-primary btn-sm hide-s">Sign up</Link>
             </>
           )}
-          <MobileMenu links={navLinks} loggedIn={!!user} isAdmin={user?.role === 'ADMIN'} />
+          <MobileMenu loggedIn={!!user} isAdmin={user?.role === 'ADMIN'} />
         </div>
       </div>
     </header>

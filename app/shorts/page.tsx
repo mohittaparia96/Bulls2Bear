@@ -6,8 +6,8 @@ import { prisma } from '@/lib/prisma';
 export const metadata: Metadata = { title: 'Shorts — learn in under a minute', description: 'Free 60-second stock market lessons: basics, charts, F&O, mindset and investing.' };
 export const dynamic = 'force-dynamic';
 
-export default async function ShortsPage({ searchParams }: { searchParams: Promise<{ play?: string }> }) {
-  const { play } = await searchParams;
+export default async function ShortsPage({ searchParams }: { searchParams: Promise<{ play?: string; cat?: string }> }) {
+  const { play, cat } = await searchParams;
   const [shorts, courses] = await Promise.all([
     prisma.short.findMany({ where: { published: true }, orderBy: { sortOrder: 'asc' } }),
     prisma.course.findMany({ where: { published: true }, select: { slug: true, title: true } }),
@@ -23,7 +23,7 @@ export default async function ShortsPage({ searchParams }: { searchParams: Promi
         <p>Bite-sized, free lessons. Tap any card to play — swipe or use ↑ ↓ to jump to the next one.</p>
       </div>
       <LibraryTabs active="shorts" courses={courses.length} shorts={shorts.length} />
-      <ShortsExplorer shorts={data} initialPlay={play} courseTitles={courseTitles} />
+      <ShortsExplorer shorts={data} initialPlay={play} initialCat={cat} courseTitles={courseTitles} />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import AjaxForm from '@/components/AjaxForm';
+import { contact } from '@/data/site';
 export const metadata = { title: 'Contact us' };
 
 export default function Contact() {
@@ -11,8 +12,8 @@ export default function Contact() {
           <p className="muted" style={{ fontSize: 17, maxWidth: 460 }}>Questions about a course, a payment, a webinar or our financial-services information? Our team replies within one business day.</p>
           <div className="feature-list" style={{ marginTop: 32, maxWidth: 460 }}>
             <a className="feature" href="mailto:info@bulls2bear.com"><div className="ic">✉</div><div><h4>Email</h4><p>info@bulls2bear.com</p></div></a>
-            <div className="feature"><div className="ic">◷</div><div><h4>Support hours</h4><p>Mon–Sat, 10:00 AM – 7:00 PM IST</p></div></div>
-            <div className="feature"><div className="ic">⌖</div><div><h4>Office</h4><p>[Registered address], India</p></div></div>
+            <div className="feature"><div className="ic">◷</div><div><h4>Support hours</h4><p>{contact.hours}</p></div></div>
+            <div className="feature"><div className="ic">⌖</div><div><h4>Office</h4><p>{contact.address}</p></div></div>
           </div>
         </div>
         <div className="form-card">

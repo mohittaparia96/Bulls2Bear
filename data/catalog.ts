@@ -54,7 +54,7 @@ export const catalog: SeedCourse[] = [
   },
   {
     slug: 'futures-options-foundations', title: 'Futures & Options Foundations', subtitle: 'Derivatives demystified — the right way',
-    category: 'F&O', level: 'Intermediate', icon: '⚡', accent: 'gold', price: 3999, mrp: 7999,
+    category: 'F&O', level: 'Beginner → Intermediate', icon: '⚡', accent: 'gold', price: 3999, mrp: 7999,
     description: 'Build a rock-solid understanding of futures, calls, puts, expiry, moneyness, margins and option payoffs before you ever touch a derivatives contract.',
     outcomes: ['How futures pricing, margin and MTM work', 'Calls, puts, premium, strike and expiry', 'Payoff diagrams for every basic position', 'Why most retail F&O traders lose — and how to avoid it'],
     chapters: [
@@ -69,7 +69,7 @@ export const catalog: SeedCourse[] = [
   },
   {
     slug: 'options-greeks-risk', title: 'Options Greeks & Risk Management', subtitle: 'Think in probabilities, not predictions',
-    category: 'F&O', level: 'Advanced', icon: '🧮', accent: 'violet', price: 4999, mrp: 9999,
+    category: 'F&O', level: 'Intermediate → Advanced', icon: '🧮', accent: 'violet', price: 4999, mrp: 9999,
     description: 'Master delta, gamma, theta, vega and implied volatility, then use them to size positions and build defined-risk strategies.',
     outcomes: ['Intuition for each Greek with live charts', 'Implied volatility, IV crush and event risk', 'Spreads, straddles, strangles and iron condors', 'Position sizing and max-loss planning'],
     chapters: [
@@ -107,6 +107,34 @@ export const catalog: SeedCourse[] = [
       { slug: 'evaluating-funds', title: 'Evaluating a Fund', summary: 'Returns, ratios and red flags.', min: 17 },
       { slug: 'asset-allocation', title: 'Asset Allocation', summary: 'The decision that drives most of your returns.', min: 14 },
       { slug: 'tax', title: 'Taxation Basics', summary: 'LTCG, STCG and tax-saving ELSS.', min: 13 },
+    ],
+  },
+  {
+    slug: 'commodity-trading-beginner', title: 'Commodity Trading for Beginners', subtitle: 'Gold, silver, crude and MCX — explained from scratch',
+    category: 'Commodity', level: 'Beginner', icon: '🛢️', accent: 'gold', price: 1999, mrp: 3999,
+    description: 'Learn how commodity markets work in India: MCX and NCDEX, contract specifications, margins and what drives gold, silver, crude oil and agri prices.',
+    outcomes: ['How MCX and NCDEX commodity futures work', 'Reading a contract: lot size, tick value and expiry', 'What moves gold, silver, crude and natural gas', 'Margin, MTM and the risk of leverage'],
+    chapters: [
+      { slug: 'what-are-commodities', title: 'What Are Commodities?', summary: 'Metals, energy and agri — and why they trade differently from stocks.', min: 9, free: true },
+      { slug: 'mcx-ncdex', title: 'MCX, NCDEX & Market Timings', summary: 'Who runs the market, who regulates it and when it trades.', min: 11, free: true },
+      { slug: 'contract-specs', title: 'Reading a Contract Specification', summary: 'Lot size, tick size, tick value, expiry and delivery.', min: 14 },
+      { slug: 'bullion', title: 'Gold & Silver', summary: 'Safe havens, the rupee and global prices.', min: 15 },
+      { slug: 'energy', title: 'Crude Oil & Natural Gas', summary: 'Inventories, OPEC+ and the overnight session.', min: 16 },
+      { slug: 'margin-risk', title: 'Margins, MTM & Risk', summary: 'Why leverage cuts both ways — and how to size positions.', min: 13 },
+    ],
+  },
+  {
+    slug: 'commodity-trading-advanced', title: 'Advanced Commodity Trading', subtitle: 'Global drivers, spreads, options and hedging',
+    category: 'Commodity', level: 'Advanced', icon: '🥇', accent: 'cyan', price: 3999, mrp: 7999,
+    description: 'Go beyond the basics: read global macro, seasonality and term structure, trade spreads and commodity options, and understand how businesses hedge.',
+    outcomes: ['Dollar, rates and global cues that move commodities', 'Contango, backwardation and rollovers', 'Calendar and inter-commodity spreads', 'Options on commodity futures and hedging'],
+    chapters: [
+      { slug: 'global-drivers', title: 'Global Drivers: Dollar, Rates & Supply', summary: 'Connecting macro news to MCX prices.', min: 12, free: true },
+      { slug: 'term-structure', title: 'Contango, Backwardation & Rollovers', summary: 'Reading the futures curve.', min: 17 },
+      { slug: 'seasonality', title: 'Seasonality & Inventory Data', summary: 'Using weekly reports and seasonal patterns.', min: 15 },
+      { slug: 'spreads', title: 'Calendar & Inter-Commodity Spreads', summary: 'Trading relationships instead of direction.', min: 19 },
+      { slug: 'options', title: 'Options on Commodity Futures', summary: 'How they differ from equity options.', min: 18 },
+      { slug: 'hedging', title: 'Hedging for Businesses & Investors', summary: 'How jewellers, refiners and farmers manage price risk.', min: 16 },
     ],
   },
 ];

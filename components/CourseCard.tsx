@@ -21,8 +21,8 @@ export function Candles({ seed = 1 }: { seed?: number }) {
     <svg viewBox="0 0 220 100" preserveAspectRatio="none" aria-hidden>
       {bars.map((b) => (
         <g key={b.i}>
-          <line x1={b.i * 10 + 5} x2={b.i * 10 + 5} y1={b.y - 6} y2={b.y + b.h + 6} stroke={b.up ? '#22e36b' : '#ff3d3d'} strokeWidth="1" />
-          <rect x={b.i * 10 + 2} y={b.y} width="6" height={b.h} fill={b.up ? '#22e36b' : '#ff3d3d'} rx="1" />
+          <line x1={b.i * 10 + 5} x2={b.i * 10 + 5} y1={b.y - 6} y2={b.y + b.h + 6} style={{ stroke: b.up ? 'var(--green)' : 'var(--bear)' }} strokeWidth="1" />
+          <rect x={b.i * 10 + 2} y={b.y} width="6" height={b.h} style={{ fill: b.up ? 'var(--green)' : 'var(--bear)' }} rx="1" />
         </g>
       ))}
     </svg>
