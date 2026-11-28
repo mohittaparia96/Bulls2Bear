@@ -21,7 +21,7 @@ export const viewport: Viewport = { themeColor: '#07080b' };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${inter.variable} ${poppins.variable}`} data-theme="dark" suppressHydrationWarning>
+    <html lang="en-IN" className={`${inter.variable} ${poppins.variable}`} data-theme="dark" data-nav="full" suppressHydrationWarning>
       <head><script dangerouslySetInnerHTML={{ __html: themeBootScript }} /></head>
       <body>
         <div className="aurora" aria-hidden><span /><span /><span /></div>

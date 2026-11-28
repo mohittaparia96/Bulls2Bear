@@ -4,6 +4,7 @@ import { getCurrentUser } from '@/lib/auth';
 import MobileMenu from './MobileMenu';
 import MegaNav from './MegaNav';
 import ThemeToggle from './ThemeToggle';
+import { headerFitScript } from '@/lib/headerFit';
 
 export function Brand() {
   return (
@@ -29,6 +30,7 @@ export function SearchBox({ className = '' }: { className?: string }) {
 export default async function Header() {
   const user = await getCurrentUser();
   return (
+    <>
     <header className="header">
       <div className="header-inner">
         <Brand />
@@ -52,5 +54,7 @@ export default async function Header() {
         </div>
       </div>
     </header>
+    <script dangerouslySetInnerHTML={{ __html: headerFitScript }} />
+    </>
   );
 }
